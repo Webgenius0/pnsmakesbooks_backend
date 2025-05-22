@@ -21,12 +21,13 @@ class NewsController extends Controller
             $searchByCategories = $request->has('category_ids') ? $request->category_ids : null;
             $searchByFormDate = $request->has('from_date') ? $request->from_date : null;
             $searchByToDate = $request->has('to_date') ? $request->to_date : null;
+            $searchByTitile = $request->has('title') ? $request->title : null;
             // Get 'per_page' from the request or default to 25
             $per_page = $request->has('per_page') ? $request->per_page : 25;
             $news = News::select('id', 'title', 'published_at', 'author', 'image_url', 'category_id')
                 ->with([
                     'category' => function ($q) {
-                        $q->select('id', 'image');
+                        $q->select('id','name', 'image');
                     }
                 ])
                 ->when($searchByCategories, function ($q) use ($searchByCategories) {
@@ -37,6 +38,9 @@ class NewsController extends Controller
                 })
                 ->when($searchByToDate, function ($q) use ($searchByToDate) {
                     $q->whereDate('published_at', '<=', $searchByToDate);
+                })
+                ->when($searchByTitile, function ($q) use ($searchByTitile) {
+                    $q->where('title', 'like', '%' . $searchByTitile . '%');
                 })
                 ->orderBy('published_at', 'desc')
                 ->paginate($per_page);

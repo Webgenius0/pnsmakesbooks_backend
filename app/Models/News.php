@@ -11,12 +11,13 @@ class News extends Model
         'title',
         'url',
         'summary',
-        'content',    
-        'image_url',    
-        'author',       
+        'content',
+        'image_url',
+        'author',
         'published_at',
         'source_name',
         'source_id',
+        'news_type'
     ];
     protected $casts = [
         'published_at' => 'datetime',
@@ -30,5 +31,5 @@ class News extends Model
     // {
     //     return $value ? $value->format('Y-m-d H:i:s') : null;
     // }
-    
+
 }
