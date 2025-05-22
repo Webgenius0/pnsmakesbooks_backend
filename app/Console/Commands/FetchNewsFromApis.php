@@ -46,7 +46,7 @@ class FetchNewsFromApis extends Command
                 'page-size' => 10,
                 'show-fields' => 'trailText,body,thumbnail,byline'
             ]);
-
+            Log::info('Guardian API response: ' . json_encode($response));
             foreach ($response['response']['results'] ?? [] as $article) {
                 News::updateOrCreate(
                     ['source_id' => $article['id']],
@@ -78,7 +78,7 @@ class FetchNewsFromApis extends Command
                 'max' => 10,
                 'apikey' => config('services.gnews.api_key'),
             ]);
-
+            Log::info('GNews API response: ' . json_encode($response));
             foreach ($response['articles'] ?? [] as $article) {
                 News::updateOrCreate(
                     ['source_id' => $article['url']],
@@ -108,7 +108,7 @@ class FetchNewsFromApis extends Command
                 'q' => $keyword,
                 'api-key' => config('services.nyt.api_key'),
             ]);
-
+            Log::info('NYT API response: ' . json_encode($response));
             foreach ($response['response']['docs'] ?? [] as $article) {
                 $image = null;
                 if (!empty($article['multimedia'])) {
@@ -161,7 +161,7 @@ class FetchNewsFromApis extends Command
         // 2. Time-based logic
         if ($publishedTime) {
             $now = now();
-            if ($publishedTime->diffInHours($now) <= 3) {
+            if ($publishedTime->diffInHours($now) <= 5) {
                 return 'headline'; // Very recent = headline
             }
 

@@ -19,4 +19,9 @@ class UserNewsFeedback extends Model
             ->withPivot('feedback')
             ->withTimestamps();
     }
+
+    public function news()
+    {
+        return $this->belongsTo(News::class);
+    }
 }

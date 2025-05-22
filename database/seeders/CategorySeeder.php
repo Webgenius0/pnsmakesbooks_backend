@@ -17,7 +17,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'UFO Sightings & Alien Encounters',
                 'related_keywords' => 'ufo, alien, abduction, flying saucer, extraterrestrial, government disclosure, strange objects',
-                'image' => 'uploads/categories/UFO_Sightings_&_Alien Encounters.png',
+                'image' => 'uploads/categories/UFO_Sightings_&_Alien_Encounters.png',
             ],
             [
                 'name' => 'Cryptids & Mythical Creatures',
