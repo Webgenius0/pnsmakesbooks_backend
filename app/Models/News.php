@@ -27,9 +27,8 @@ class News extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    // public function getPublishedAtAttribute($value)
-    // {
-    //     return $value ? $value->format('Y-m-d H:i:s') : null;
-    // }
-
+    public function userFeedback()
+    {
+        return $this->hasMany(UserNewsFeedback::class);
+    }
 }

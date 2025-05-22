@@ -9,6 +9,7 @@ use App\Http\Controllers\API\Auth\ResetPasswordController;
 use App\Http\Controllers\API\Auth\UserController;
 use App\Http\Controllers\API\V1\CategoryController;
 use App\Http\Controllers\API\V1\CMS\HomePageController;
+use App\Http\Controllers\API\V1\FeedbackController;
 use App\Http\Controllers\API\V1\NewsController;
 use App\Http\Controllers\API\V1\User\UserContactSupportController;
 use App\Http\Controllers\API\V1\User\UserFaqController;
@@ -50,4 +51,6 @@ Route::get("dynamic-pages", [HomePageController::class, "getDynamicPages"]);
 Route::get("dynamic-pages/single/{slug}", [HomePageController::class, "showDaynamicPage"]);
 
 Route::apiResource('categories', CategoryController::class)->only('index', 'show');
-Route::apiResource('news', NewsController::class);
+Route::apiResource('news', NewsController::class)->only('index', 'show');
+Route::apiResource('feedbacks', FeedbackController::class)->only('index', 'store');
+Route::post('feedbacks/clear-saved-data', [FeedbackController::class, 'clearSavesData']);
