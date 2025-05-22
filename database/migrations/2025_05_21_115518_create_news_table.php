@@ -22,8 +22,9 @@ return new class extends Migration {
             $table->longText('content')->nullable();
             $table->longText('image_url')->nullable();
             $table->longText('author')->nullable();
-            $table->longText('news_type')->nullable();
+            $table->string('news_type')->nullable();
             $table->timestamps();
+            $table->index(['published_at', 'news_type', 'category_id']);
         });
     }
 

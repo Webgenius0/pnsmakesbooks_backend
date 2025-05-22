@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->text('related_keywords');
             $table->string('image')->nullable(); // category image
             $table->timestamps();
+            
         });
     }
 
