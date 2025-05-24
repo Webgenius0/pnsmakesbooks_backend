@@ -34,8 +34,8 @@ $systemSetting = App\Models\SystemSetting::first();
             </li>
             <!-- Contact Support Message Menu Item -->
 
-            <!-- Faqs Menu Item -->
-            <li class="menu-item {{ request()->routeIs('faqs.*') ? 'open' : '' }}">
+            <!-- Categories Menu Item -->
+            <li class="menu-item {{ request()->routeIs('categories.*') ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle active">
                     <span class="material-symbols-outlined menu-icon">help</span>
                     <span class="title">Category</span>
@@ -43,15 +43,15 @@ $systemSetting = App\Models\SystemSetting::first();
                 <ul class="menu-sub">
                     <!-- Account Settings Submenu -->
                     <li class="menu-item ">
-                        <a href="{{ route('faqs.index') }}"
-                            class="menu-link {{ request()->routeIs('faqs.index') ? 'active' : '' }} ">
+                        <a href="{{ route('categories.index') }}"
+                            class="menu-link {{ request()->routeIs('categories.index') ? 'active' : '' }} ">
                             Category List
                         </a>
                     </li>
                     <!-- Change Password Submenu -->
                     <li class="menu-item">
-                        <a href="{{ route('faqs.create') }}"
-                            class="menu-link {{ request()->routeIs('faqs.create') ? 'active' : '' }}">
+                        <a href="{{ route('categories.create') }}"
+                            class="menu-link {{ request()->routeIs('categories.create') ? 'active' : '' }}">
                             Add New Category
                         </a>
                     </li>
@@ -119,7 +119,7 @@ $systemSetting = App\Models\SystemSetting::first();
                 </ul>
             </li>
 
-            <li class="menu-title small text-uppercase">
+            {{-- <li class="menu-title small text-uppercase">
                 <span class="menu-title-text">CMS</span>
             </li>
             <!-- CMS Menu Item -->
@@ -137,7 +137,7 @@ $systemSetting = App\Models\SystemSetting::first();
                     </li>
 
                 </ul>
-            </li>
+            </li> --}}
 
 
             <!-- Logout Menu Item -->

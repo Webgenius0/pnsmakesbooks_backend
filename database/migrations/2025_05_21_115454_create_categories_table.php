@@ -15,8 +15,9 @@ return new class extends Migration {
             $table->string('name')->unique();
             $table->text('related_keywords');
             $table->string('image')->nullable(); // category image
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
-            
+
         });
     }
 

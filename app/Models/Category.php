@@ -10,12 +10,14 @@ class Category extends Model
     protected $fillable = [
         'name',
         'related_keywords',
-        'image'
+        'image',
+        'status'
     ];
     protected $casts = [
         'name' => 'string',
         'related_keywords' => 'array',
-        'image' => 'string'
+        'image' => 'string',
+        'status' => 'string',
     ];
 
     public function news()

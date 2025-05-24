@@ -28,7 +28,7 @@
         integrity="sha256-BpyIV7Y3e2pnqy8TQGXxsmOiQ4jXNDTOTBGL2TEJeDY=" crossorigin="anonymous"></script>
 
         {{-- new add --}}
-        <script src="{{ asset('frontend/assets/js/plugins/jquery-3.7.1.min.js') }}"></script>
+        {{-- <script src="{{ asset('frontend/assets/js/plugins/jquery-3.7.1.min.js') }}"></script> --}}
         <script src="{{ asset('backend') }}/admin/assets/datatables/data-tables.min.js"></script>
         <!--buttons dataTables-->
         <script src="{{ asset('backend') }}/admin/assets/datatables/datatables.buttons.min.js"></script>
@@ -105,42 +105,42 @@
     }
 
     //realtime notification fetch
-    document.addEventListener('DOMContentLoaded', function() {
+    // document.addEventListener('DOMContentLoaded', function() {
 
 
-        Echo.private('App.Models.User.' + {{ auth()->id() }})
-            .notification((notification) => {
-                // console.log(notification);
-                let notificationCount = parseInt($("#notification-count").text());
-                if (notificationCount >= 0) {
-                    $("#notification-count").text(notificationCount + 1);
-                }
-                // $('#notification-list').empty();
-                $('#notification-list').append(`
-                    <div class="notification-menu unseen" id="notification_${notification.id}" style="background-color: #00fff3;">
-                        <a href="${notification.url}" class="dropdown-item">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rounded bg-light" style="width: 40px; height: 40px; overflow: hidden;">
-                                            <img src="${notification.thumbnail ?? 'default-thumbnail.jpg'}" 
-                                                alt="Notification Thumbnail" 
-                                                class="img-fluid rounded">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <p>${notification.title ?? 'Untitled Notification'}</p>
-                                    <span style="background-color: red;border-radius: 50%;">New</span>
-                                    <span class="fs-13">${moment(notification.created_at).fromNow()}</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                `);
-                flasher.info(notification.message, 'Notification');
-            });
-    })
+    //     Echo.private('App.Models.User.' + {{ auth()->id() }})
+    //         .notification((notification) => {
+    //             // console.log(notification);
+    //             let notificationCount = parseInt($("#notification-count").text());
+    //             if (notificationCount >= 0) {
+    //                 $("#notification-count").text(notificationCount + 1);
+    //             }
+    //             // $('#notification-list').empty();
+    //             $('#notification-list').append(`
+    //                 <div class="notification-menu unseen" id="notification_${notification.id}" style="background-color: #00fff3;">
+    //                     <a href="${notification.url}" class="dropdown-item">
+    //                         <div class="d-flex align-items-center">
+    //                             <div class="flex-shrink-0">
+    //                                 <div class="d-flex align-items-center">
+    //                                     <div class="rounded bg-light" style="width: 40px; height: 40px; overflow: hidden;">
+    //                                         <img src="${notification.thumbnail ?? 'default-thumbnail.jpg'}" 
+    //                                             alt="Notification Thumbnail" 
+    //                                             class="img-fluid rounded">
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                             <div class="flex-grow-1 ms-3">
+    //                                 <p>${notification.title ?? 'Untitled Notification'}</p>
+    //                                 <span style="background-color: red;border-radius: 50%;">New</span>
+    //                                 <span class="fs-13">${moment(notification.created_at).fromNow()}</span>
+    //                             </div>
+    //                         </div>
+    //                     </a>
+    //                 </div>
+    //             `);
+    //             flasher.info(notification.message, 'Notification');
+    //         });
+    // })
 </script>
 
     @stack('scripts')
