@@ -19,12 +19,14 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+        // $data = Category::get();
+        // dd($data->toArray());
         if ($request->ajax()) {
             $data = Category::latest();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('thumbnail', function ($data) {
-                    return '<img src="' . asset($data->thumbnail) . '" class="wh-40 rounded-3" alt="no image found">';
+                ->addColumn('image', function ($data) {
+                    return '<img src="' . asset($data->image) . '" class="wh-40 rounded-3" alt="no image found">';
                 })
                 ->addColumn('status', function ($data) {
                     $status = '<div class="form-check form-switch">';
@@ -41,17 +43,16 @@ class CategoryController extends Controller
                 })
                 ->addColumn('action', function ($data) {
                     return '<div class="action-wrapper">
-                        <a type="button" href="javascript:void(0)"
+                        <a type="button" href="' . route('categories.edit', $data->id) . '"
                                 class="ps-0 border-0 bg-transparent lh-1 position-relative top-2"
-                                data-bs-toggle="modal" data-bs-target="#EditCategory" onclick="viewModel(' . $data->id . ')" ><i class="material-symbols-outlined fs-16 text-body">edit</i>
+                                 ><i class="material-symbols-outlined fs-16 text-body">edit</i>
                             </a>
                         <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete" onclick="deleteRecord(event,' . $data->id . ')">
                         <i class="material-symbols-outlined fs-16 text-danger">delete</i>
                         </button>
-             
-                </div>';
+                        </div>';
                 })
-                ->rawColumns(['thumbnail', 'status', 'action'])
+                ->rawColumns(['image', 'status', 'action'])
                 ->make(true);
         }
         return view("backend.layouts.category.index");
@@ -61,37 +62,29 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        // return view("backend.layouts.category.create");
-        flash()->warning('not found this page');
-        return back();
+        return view("backend.layouts.category.create");
     }
     /**
      * Store a newly created data in storage.
      */
     public function store(Request $request)
     {
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
-            'description' => 'required|string|max:255',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'related_keywords' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
         // dd($validatedData);
         try {
-            if ($request->hasFile('thumbnail')) {
-                $validatedData['thumbnail'] = Helper::fileUpload($request->file('thumbnail'), 'category', time() . '_' . getFileName($request->file('thumbnail')));
+            if ($request->hasFile('image')) {
+                $validatedData['image'] = Helper::fileUpload($request->file('image'), 'category', time() . '_' . getFileName($request->file('image')));
             }
             Category::Create($validatedData);
-            return response()->json([
-                "success" => true,
-                "message" => "Category created successfully"
-            ]);
+            flash()->success('Category created successfully');
+            return redirect()->route('categories.index');
         } catch (Exception $e) {
             Log::error("CategoryController::store" . $e->getMessage());
-            return response()->json([
-                "success" => false,
-                "message" => "Category not create"
-            ]);
+            return back()->with('error', 'Something went wrong');
         }
     }
 
@@ -116,36 +109,29 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id,
-            'description' => 'required|string|max:255',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'related_keywords' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         try {
             $data = Category::findOrFail($id);
             if (in_array($data->name, ['Car', 'Restaurant', 'Real Estate'])) {
                 unset($validatedData['name']); // Prevent updating `name`
             }
-            if ($request->hasFile('thumbnail')) {
-                if ($data && $data->thumbnail && file_exists(public_path($data->thumbnail))) {
-                    Helper::fileDelete(public_path($data->thumbnail));
+            if ($request->hasFile('image')) {
+                if ($data && $data->image && file_exists(public_path($data->image))) {
+                    Helper::fileDelete(public_path($data->image));
                 }
-                $validatedData['thumbnail'] = Helper::fileUpload($request->file('thumbnail'), 'category', time() . '_' . getFileName($request->file('thumbnail')));
+                $validatedData['image'] = Helper::fileUpload($request->file('image'), 'category', time() . '_' . getFileName($request->file('image')));
             }
             $data = Category::findOrFail($id);
             $data->update($validatedData);
 
-            return response()->json([
-                "success" => true,
-                "message" => "Category Updated Successfully"
-            ]);
+            return redirect()->route('categories.index')->with('success', 'Category updated successfully');
         } catch (Exception $e) {
             Log::error("CategoryController::update" . $e->getMessage());
-            return response()->json([
-                "success" => false,
-                "message" => "Category not Update"
-            ]);
+            return redirect()->route('categories.index')->with('error', 'Something went wrong');
         }
     }
 
@@ -155,13 +141,6 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $data = Category::findOrFail($id);
-        // Prevent deletion of specific categories
-        if (in_array($data->name, ['Car', 'Restaurant', 'Real Estate'])) {
-            return response()->json([
-                "success" => false,
-                "message" => "This category cannot be deleted."
-            ], 403);
-        }
 
         // delete the category
         if (!empty($data->thumbnail) && $data->thumbnail !== 'uploads/category/demo_pic.jpg') {

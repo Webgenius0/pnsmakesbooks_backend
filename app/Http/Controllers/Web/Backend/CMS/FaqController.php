@@ -47,8 +47,7 @@ class FaqController extends Controller
                         <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete" onclick="deleteRecord(event,' . $data->id . ')">
                         <i class="material-symbols-outlined fs-16 text-danger">delete</i>
                         </button>
-             
-                </div>';
+                        </div>';
                 })
                 ->rawColumns(['status', 'action'])
                 ->make(true);

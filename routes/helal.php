@@ -10,6 +10,7 @@
 
 
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\Web\Backend\CategoryController;
 use App\Http\Controllers\Web\Backend\CMS\FaqController;
 use App\Http\Controllers\Web\Backend\CMS\HomePageSocialLinkContainerController;
 use App\Http\Controllers\Web\Backend\ContactMessageController;
@@ -54,12 +55,12 @@ Route::middleware(['auth:web', 'role_check'])->prefix('admin')->group(function (
   Route::resource('/dynamic-page', DynamicPageController::class)->names('dynamic_page');
   Route::post('/dynamic-page/status/{id}', [DynamicPageController::class, 'status'])->name('dynamic_page.status');
 
-  // Routes for FaqController
-  Route::resource('/faqs', FaqController::class)->names('faqs');
-  Route::post('/faqs/status/{id}', [FaqController::class, 'status'])->name('faqs.status');
+  // // Routes for FaqController
+  // Route::resource('/faqs', FaqController::class)->names('faqs');
+  // Route::post('/faqs/status/{id}', [FaqController::class, 'status'])->name('faqs.status');
   // Route Social link
-  Route::resource('/home-page/social-link/index', HomePageSocialLinkContainerController::class)->names('cms.home_page.social_link')->except('show');
-  Route::post('/home-page/social-link/status/{id}', [HomePageSocialLinkContainerController::class, 'status'])->name('cms.home_page.social_link.status');
+  // Route::resource('/home-page/social-link/index', HomePageSocialLinkContainerController::class)->names('cms.home_page.social_link')->except('show');
+  // Route::post('/home-page/social-link/status/{id}', [HomePageSocialLinkContainerController::class, 'status'])->name('cms.home_page.social_link.status');
 
 
   // Routes for NotificationController
@@ -71,9 +72,11 @@ Route::middleware(['auth:web', 'role_check'])->prefix('admin')->group(function (
   Route::get('/contact-us-message', [ContactMessageController::class, 'index'])->name('admin_contact_us.index');
   Route::get('/contact-us-message/{id}', [ContactMessageController::class, 'show'])->name('admin_contact_us.show');
   Route::delete('/contact-us-message/{id}', [ContactMessageController::class, 'destroy'])->name('admin_contact_us.destroy');
-  Route::get('/news', [NewsController::class, 'index']);
-  Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
-  Route::get('/news/category/{category}', [NewsController::class, 'category']);
+  // Route::get('/news', [NewsController::class, 'index']);
+  // Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
+  // Route::get('/news/category/{category}', [NewsController::class, 'category']);
+  Route::resource('/categories', CategoryController::class)->names('categories');
+  Route::post('/categories/status/{id}', [CategoryController::class, 'status'])->name('categories.status');
 });
 
 
