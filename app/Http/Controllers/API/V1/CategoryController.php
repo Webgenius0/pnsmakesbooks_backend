@@ -21,6 +21,7 @@ class CategoryController extends Controller
             // Get 'per_page' from the request or default to 25
             $per_page = $request->has('per_page') ? $request->per_page : 25;
             $categories = Category::select('id', 'name', 'related_keywords', 'image')
+                ->where('status', 'active')
                 ->paginate($per_page);
             return Helper::jsonResponse(true, 'Categories fetched successfully', 200, $categories, true);
         } catch (Exception $e) {
