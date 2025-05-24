@@ -16,7 +16,7 @@ class FetchNewsFromApis extends Command
 
     public function handle()
     {
-        $categories = Category::all();
+        $categories = Category::where('status', 'active')->get();
         Log::info('Starting news fetching process.');
 
         foreach ($categories as $category) {
