@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\V1\NewsIndexResource;
+use App\Http\Resources\API\V1\NewsSingleResource;
 use App\Models\News;
 use Carbon\Carbon;
 use Exception;
@@ -26,6 +27,7 @@ class NewsController extends Controller
             'news_type' => 'nullable|in:newsfeed,trending,headline',
         ]);
         try {
+
             $searchByCategories = $request->has('category_ids') ? $request->category_ids : null;
             $searchByFromDate = $request->has('from_date') ? Carbon::parse($request->from_date)->format('Y-m-d') : null;
             $searchByToDate = $request->has('to_date') ? Carbon::parse($request->to_date)->format('Y-m-d') : null;
@@ -75,7 +77,7 @@ class NewsController extends Controller
             $news = News::with('userFeedback:id,news_id,feedback', 'category:id,name,image')
                 ->select('id', 'title', 'url', 'summary', 'published_at', 'image_url', 'author', 'category_id', 'content', 'news_type')
                 ->find($id);
-            return Helper::jsonResponse(true, 'News fetched successfully', 200, $news);
+            return Helper::jsonResponse(true, 'News fetched successfully', 200, NewsSingleResource::make($news));
         } catch (Exception $e) {
             Log::error("NewsController::show" . $e->getMessage());
             return Helper::jsonErrorResponse('Failed to fetch news', 500);
