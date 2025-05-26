@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class Helper
 {
@@ -133,4 +134,48 @@ class Helper
             Log::error($exception);
         }
     }
+
+
+
+    public static function translateText($text, $lang = 'en')
+    {
+        try {
+            $tr = new GoogleTranslate();
+            $tr->setTarget($lang);
+            return $tr->translate($text);
+        } catch (\Exception $e) {
+            return $text;
+        }
+    }
+    public static function translateCached($text, $lang = 'en')
+    {
+        $key = 'translated_' . md5($text . $lang);
+        return cache()->rememberForever($key, function () use ($text, $lang) {
+            try {
+                $tr = new GoogleTranslate();
+                $tr->setTarget($lang);
+                return $tr->translate($text);
+            } catch (\Exception $e) {
+                return $text;
+            }
+        });
+    }
+    public static function translateHtmlPreserveTags($html, $lang)
+    {
+        $doc = new \DOMDocument();
+        libxml_use_internal_errors(true); // HTML parsing warning ignore
+        $doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+
+        $xpath = new \DOMXPath($doc);
+        foreach ($xpath->query('//text()') as $textNode) {
+            $text = trim($textNode->nodeValue);
+            if ($text !== '') {
+                $textNode->nodeValue = self::translateCached($text, $lang); // or your own translator
+            }
+        }
+
+        $html = $doc->saveHTML($doc->documentElement);
+        return preg_replace('/^<!DOCTYPE.+?>/', '', $html); // remove <!DOCTYPE ...> if needed
+    }
+
 }
