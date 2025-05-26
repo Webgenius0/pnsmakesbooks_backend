@@ -166,20 +166,34 @@ class Helper
     }
     public static function translateHtmlPreserveTags($html, $lang)
     {
-        $doc = new \DOMDocument();
-        libxml_use_internal_errors(true); // HTML parsing warning ignore
-        $doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
-
-        $xpath = new \DOMXPath($doc);
-        foreach ($xpath->query('//text()') as $textNode) {
-            $text = trim($textNode->nodeValue);
-            if ($text !== '') {
-                $textNode->nodeValue = self::translateCached($text, $lang); // or your own translator
-            }
+        // Step 1: Null বা empty check
+        if (empty($html)) {
+            return '';
         }
 
-        $html = $doc->saveHTML($doc->documentElement);
-        return preg_replace('/^<!DOCTYPE.+?>/', '', $html); // remove <!DOCTYPE ...> if needed
+        try {
+            $doc = new \DOMDocument();
+            libxml_use_internal_errors(true); // HTML parsing warning ignore
+
+            $doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+
+            $xpath = new \DOMXPath($doc);
+
+            foreach ($xpath->query('//text()') as $textNode) {
+                $text = trim($textNode->nodeValue);
+                if ($text !== '') {
+                    $translated = self::translateCached($text, $lang);
+                    $textNode->nodeValue = $translated;
+                }
+            }
+
+            // Step 2: Return HTML without <!DOCTYPE>
+            $html = $doc->saveHTML($doc->documentElement);
+            return preg_replace('/^<!DOCTYPE.+?>/', '', $html);
+        } catch (\Exception $e) {
+            // Step 3: Fallback on error
+            return $html;
+        }
     }
 
 }
