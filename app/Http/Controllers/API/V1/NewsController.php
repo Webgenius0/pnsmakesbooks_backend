@@ -33,7 +33,7 @@ class NewsController extends Controller
             $searchByToDate = $request->has('to_date') ? Carbon::parse($request->to_date)->format('Y-m-d') : null;
             $searchByTitle = $request->has('title') ? $request->title : null;
             $searchByNewsType = $request->has('news_type') ? $request->news_type : null;
-            $per_page = $request->get('per_page', 25); // cleaner fallback
+            $per_page = $request->get('per_page', 5); // cleaner fallback
 
             $news = News::select('id', 'title', 'published_at', 'author', 'image_url', 'category_id')
                 ->with([

@@ -17,8 +17,8 @@ class FeedbackController extends Controller
     public function index(Request $request)
     {
         try {
-            // Get 'per_page' from the request or default to 25
-            $per_page = $request->has('per_page') ? $request->per_page : 25;
+            // Get 'per_page' from the request or default to 5
+            $per_page = $request->has('per_page') ? $request->per_page : 5;
             $serachByFeedback = $request->has('feedback') ? $request->feedback : null;
 
             $feedback = UserNewsFeedback::
