@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\API\V1\CategoryIndexResource;
 use App\Http\Resources\API\V1\CategoryShowResource;
 use App\Models\Category;
 use Exception;
@@ -23,7 +24,7 @@ class CategoryController extends Controller
             $categories = Category::select('id', 'name', 'related_keywords', 'image')
                 ->where('status', 'active')
                 ->paginate($per_page);
-            return Helper::jsonResponse(true, 'Categories fetched successfully', 200, $categories, true);
+            return Helper::jsonResponse(true, 'Categories fetched successfully', 200, CategoryIndexResource::collection($categories), true);
         } catch (Exception $e) {
             Log::error("CategoryController::index" . $e->getMessage());
             return Helper::jsonErrorResponse('Failed to fetch categories', 500);
