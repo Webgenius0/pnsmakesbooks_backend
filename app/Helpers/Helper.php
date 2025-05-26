@@ -149,6 +149,10 @@ class Helper
     }
     public static function translateCached($text, $lang = 'en')
     {
+        if (is_null($text)) {
+            return ''; // অথবা return $text;
+        }
+
         $key = 'translated_' . md5($text . $lang);
         return cache()->rememberForever($key, function () use ($text, $lang) {
             try {
