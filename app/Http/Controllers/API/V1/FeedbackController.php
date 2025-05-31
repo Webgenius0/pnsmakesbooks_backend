@@ -20,23 +20,35 @@ class FeedbackController extends Controller
             // Get 'per_page' from the request or default to 5
             $per_page = $request->has('per_page') ? $request->per_page : 5;
             $serachByFeedback = $request->has('feedback') ? $request->feedback : null;
+            $searchByTitle = $request->has('title') ? $request->title : null;
 
             $feedback = UserNewsFeedback::
                 when($serachByFeedback, function ($q) use ($serachByFeedback) {
                     $q->where('feedback', 'like', '%' . $serachByFeedback . '%');
                 })
+                ->when($searchByTitle, function ($q) use ($searchByTitle) {
+                    // Filter feedbacks where related news matches the title
+                    $q->whereHas('news', function ($q) use ($searchByTitle) {
+                        $q->where('title', 'like', '%' . $searchByTitle . '%');
+                    });
+                })
                 ->with([
-                    'news' => function ($q) {
-                        $q->select('id', 'title', 'published_at', 'author', 'image_url', 'category_id')->with([
-                            'category' => function ($q) {
-                                $q->select('id', 'name', 'image');
-                            }
-                        ]);
+                    'news' => function ($q) use ($searchByTitle) {
+                        $q->select('id', 'title', 'published_at', 'author', 'image_url', 'category_id')
+                            ->when($searchByTitle, function ($q) use ($searchByTitle) {
+                                $q->where('title', 'like', '%' . $searchByTitle . '%');
+                            })
+                            ->with([
+                                'category' => function ($q) {
+                                    $q->select('id', 'name', 'image');
+                                }
+                            ]);
                     }
                 ])
                 ->select('id', 'news_id', 'feedback')
                 ->latest()
                 ->paginate($per_page);
+
 
             return Helper::jsonResponse(true, 'Feedback fetched successfully', 200, $feedback, true);
         } catch (Exception $e) {
