@@ -48,8 +48,6 @@ class FeedbackController extends Controller
                 ->select('id', 'news_id', 'feedback')
                 ->latest()
                 ->paginate($per_page);
-
-
             return Helper::jsonResponse(true, 'Feedback fetched successfully', 200, $feedback, true);
         } catch (Exception $e) {
             Log::error("FeedbackController::index" . $e->getMessage());
